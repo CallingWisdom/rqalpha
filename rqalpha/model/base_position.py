@@ -72,11 +72,13 @@ class BasePosition(AbstractPosition):
 
     @property
     def last_price(self):
+        # FIXME if self._last_price == self._last_price ?
         return (self._last_price if self._last_price == self._last_price else
                 Environment.get_instance().get_last_price(self._order_book_id))
 
     def update_last_price(self):
         price = Environment.get_instance().get_last_price(self._order_book_id)
+        # Fixme if price == price ?
         if price == price:
             # 过滤掉 nan
             self._last_price = price
