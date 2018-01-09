@@ -87,17 +87,21 @@ class SignalBroker(AbstractBroker):
             在 Signal 模式下，不再阻止涨跌停是否买进，price_limit 参数表示是否给出警告提示。
             """
             if order.side == SIDE.BUY and deal_price >= price_board.get_limit_up(order_book_id):
-                user_system_log.warning(_(u"You have traded {order_book_id} with {quantity} lots in {bar_status}").format(
+                user_system_log.warning(_(u"You have traded {order_book_id} with {quantity} lots,deal_price:{deal_price},LIMIT_UP:{LIMIT_UP}").format(
                     order_book_id=order_book_id,
                     quantity=order.quantity,
-                    bar_status=BAR_STATUS.LIMIT_UP
+                    # bar_status=BAR_STATUS.LIMIT_UP, #  in {bar_status}
+                    deal_price=deal_price,
+                    LIMIT_UP=price_board.get_limit_up(order_book_id)
                 ))
                 return
             if order.side == SIDE.SELL and deal_price <= price_board.get_limit_down(order_book_id):
-                user_system_log.warning(_(u"You have traded {order_book_id} with {quantity} lots in {bar_status}").format(
+                user_system_log.warning(_(u"You have traded {order_book_id} with {quantity} lots,deal_price:{deal_price},LIMIT_DOWN:{LIMIT_DOWN}").format(
                     order_book_id=order_book_id,
                     quantity=order.quantity,
-                    bar_status=BAR_STATUS.LIMIT_DOWN
+                    # bar_status=BAR_STATUS.LIMIT_DOWN, #  in {bar_status}
+                    deal_price=deal_price,
+                    LIMIT_DOWN = price_board.get_limit_down(order_book_id)
                 ))
                 return
 
