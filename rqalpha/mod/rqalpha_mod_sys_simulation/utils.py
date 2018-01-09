@@ -36,6 +36,7 @@ def _filter_positions(env, account_type):
     positions = env.config.base.init_positions
     futures = [ins.order_book_id for ins in env.data_proxy.all_instruments('Future')]
     if account_type == 'FUTURE':
+        #FIXME should this be [position for position in positions.items() if position[0] in futures] ?
         return [position for position in positions if position[0] in futures]
     else:
         return [position for position in positions if position[0] not in futures]
