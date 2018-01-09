@@ -344,6 +344,7 @@ class BarMap(object):
                 system_log.exception(e)
                 raise patch_user_exc(KeyError(_(u"id_or_symbols {} does not exist").format(key)))
             if bar is None:
+                system_log.warn('bar is none: {order_book_id},{dt},{frequency}'.format(order_book_id=order_book_id,dt=self._dt,frequency=self._frequency))
                 return BarObject(instrument, NANDict, self._dt)
             else:
                 self._cache[order_book_id] = bar
