@@ -91,6 +91,9 @@ def order_shares(id_or_ins, amount, price=None, style=None):
         #购买1000股的平安银行股票，并以限价单发送，价格为￥10：
         order_shares('000001.XSHG', 1000, style=LimitOrder(10))
     """
+
+    orig_amount = amount
+
     if amount == 0:
         # 如果下单量为0，则认为其并没有发单，则直接返回None
         return None
@@ -102,9 +105,10 @@ def order_shares(id_or_ins, amount, price=None, style=None):
     env = Environment.get_instance()
 
     price = env.get_last_price(order_book_id)
-    if not is_valid_price(price):
+    if not is_valid_price(price): # fixme if the security was not traded yesterday,it won't be traded ?
+        print('dt,last',env.price_board._bar_dict.dt,env.price_board._bar_dict[order_book_id])
         user_system_log.warn(
-            _(u"Order Creation Failed: [{order_book_id}] No market data").format(order_book_id=order_book_id))
+            _(u"Order Creation Failed: [{order_book_id}] last price {price}").format(order_book_id=order_book_id,price=price))
         return
 
     if amount > 0:
@@ -124,15 +128,15 @@ def order_shares(id_or_ins, amount, price=None, style=None):
 
     if price == 0:
         user_system_log.warn(
-            _(u"Order Creation Failed: [{order_book_id}] No market data").format(order_book_id=order_book_id))
+            _(u"Order Creation Failed: [{order_book_id}] last price is 0").format(order_book_id=order_book_id))
         r_order.mark_rejected(
-            _(u"Order Creation Failed: [{order_book_id}] No market data").format(order_book_id=order_book_id))
+            _(u"Order Creation Failed: [{order_book_id}] last price is 0").format(order_book_id=order_book_id))
         return r_order
 
     if amount == 0:
         # 如果计算出来的下单量为0, 则不生成Order, 直接返回None
         # 因为很多策略会直接在handle_bar里面执行order_target_percent之类的函数，经常会出现下一个量为0的订单，如果这些订单都生成是没有意义的。
-        r_order.mark_rejected(_(u"Order Creation Failed: 0 order quantity"))
+        r_order.mark_rejected(_(u"Order Creation Failed: [{order_book_id}] {orig_amount} order quantity. round_lot {round_lot}").format(order_book_id=order_book_id,orig_amount=round(orig_amount,5),round_lot=round_lot))
         return r_order
     if r_order.type == ORDER_TYPE.MARKET:
         r_order.set_frozen_price(price)
