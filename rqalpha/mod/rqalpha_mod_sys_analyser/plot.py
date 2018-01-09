@@ -25,7 +25,7 @@ def plot_result(result_dict, show_windows=True, savefile=None):
     from matplotlib.font_manager import findfont, FontProperties
     import numpy as np
 
-    rcParams['font.family'] = 'sans-serif'
+    rcParams['font.family'] = 'DejaVu Sans'#'sans-serif'
     rcParams['font.sans-serif'] = [
         u'Microsoft Yahei',
         u'Heiti SC',
@@ -38,11 +38,12 @@ def plot_result(result_dict, show_windows=True, savefile=None):
     ] + rcParams['font.sans-serif']
     rcParams['axes.unicode_minus'] = False
 
-    use_chinese_fonts = True
-    font = findfont(FontProperties(family=['sans-serif']))
-    if "/matplotlib/" in font:
-        use_chinese_fonts = False
-        system_log.warn("Missing Chinese fonts. Fallback to English.")
+    # use_chinese_fonts = True
+    # font = findfont(FontProperties(family=['sans-serif']))
+    # if "/matplotlib/" in font:
+    #     use_chinese_fonts = False
+    #     system_log.warn("Missing Chinese fonts. Fallback to English.")
+    use_chinese_fonts = False
 
     summary = result_dict["summary"]
 
