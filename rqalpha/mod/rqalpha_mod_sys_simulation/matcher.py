@@ -68,6 +68,7 @@ class Matcher(object):
             order_book_id = order.order_book_id
             instrument = self._env.get_instrument(order_book_id)
 
+            # TODO will the price on listed_date always be invalid? if order.type==LIMIT,and the price is not valid at current bar, it will be rejected.
             if not is_valid_price(price_board.get_last_price(order_book_id)):
                 listed_date = instrument.listed_date.date()
                 if listed_date == self._trading_dt.date():
