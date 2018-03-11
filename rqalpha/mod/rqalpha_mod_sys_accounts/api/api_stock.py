@@ -105,7 +105,7 @@ def order_shares(id_or_ins, amount, price=None, style=None):
     env = Environment.get_instance()
 
     price = env.get_last_price(order_book_id)
-    if not is_valid_price(price): # fixme if the security was not traded yesterday,it won't be traded ?
+    if not is_valid_price(price): # fixme if the security was not traded yesterday,it won't be traded ? --- this requires env.get_last_price() would not skip suspended price
         print('dt,last',env.price_board._bar_dict.dt,env.price_board._bar_dict[order_book_id])
         user_system_log.warn(
             _(u"Order Creation Failed: [{order_book_id}] last price {price}").format(order_book_id=order_book_id,price=price))
